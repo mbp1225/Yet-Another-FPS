@@ -12,6 +12,16 @@ public class PlayerController : MonoBehaviour
 
     [Space(10)]
 
+    [Header("Movement Variables")]
+    [SerializeField] float movementSpeed;
+    [SerializeField] float lookSpeed;
+    float movH, movV, mouseX, mouseY;
+    [SerializeField] Transform head;
+    float angleV = 0, angleH = 0;
+    Rigidbody rb;
+
+    [Space(10)]
+
     [Header("Weapon Variables")]
     [SerializeField] Gun[] guns = new Gun[1];
     [SerializeField] GameObject currentGun;
@@ -27,6 +37,8 @@ public class PlayerController : MonoBehaviour
 
     void Start ()
     {
+        Cursor.visible = false;
+
         cam.fieldOfView = fovNormal;
 
         gunPosition.localPosition = hipPosition;
@@ -36,13 +48,26 @@ public class PlayerController : MonoBehaviour
 
         InitializeWeapons();
         UpdateUI();
+
+        rb = GetComponent<Rigidbody>();
 	}
-	
-	void Update ()
+
+    void Update ()
     {
+        //Movement related inputs.
+        //Movement.
+        movH = Input.GetAxis("Horizontal");
+        movV = Input.GetAxis("Vertical");
+        if (movH > 0.1f || -0.1f > movH || movV > 0.1f || -0.1f > movV) Move(movH, movV);
+        //Look.
+        mouseX = Input.GetAxis("Mouse X");
+        mouseY = Input.GetAxis("Mouse Y");
+        if (mouseY > 0.05f || -0.05f > mouseY || mouseX > 0.05f || -0.05f > mouseX) Look(mouseX, mouseY);
+        //---//
+
         //Weapons related inputs.
         //Firing the gun.
-		if (Input.GetButtonDown("Fire1")) currentGun.GetComponent<GunController>().Shoot();
+        if (Input.GetButtonDown("Fire1")) currentGun.GetComponent<GunController>().Shoot();
         //Aiming the gun.
         if (Input.GetButtonDown("Fire2"))
         {
@@ -56,6 +81,9 @@ public class PlayerController : MonoBehaviour
         }
         //Reloading
         if (Input.GetButtonDown("Reload")) currentGun.GetComponent<GunController>().Reload();
+        //---//
+
+        gunPosition.LookAt(head.transform.forward * 100);
     }
 
     void InitializeWeapons() //Adapt after allowing multiple weapons.
@@ -67,6 +95,26 @@ public class PlayerController : MonoBehaviour
     void SwapWeapon(int w)
     {
 
+    }
+
+    void Move(float h, float v)
+    {
+        //rb.MovePosition(transform.position + (transform.right * h * movementSpeed * Time.deltaTime) + (transform.forward * v * movementSpeed * Time.deltaTime));
+        transform.position += (transform.forward * v * movementSpeed * Time.deltaTime) + (transform.right * h * movementSpeed * Time.deltaTime);
+    }
+
+    void Look(float x, float y)
+    {
+        angleV += y * (lookSpeed) * Time.deltaTime;
+        if (angleV < -60) angleV = -60;
+        if (angleV > 80) angleV = 80;
+        head.transform.localRotation = Quaternion.Euler(-angleV, 0, 0);
+
+        angleH += x * (lookSpeed) * Time.deltaTime;
+        if (angleH < 0) angleH %= 360;
+        if (angleH > 360) angleH %= 360;
+        transform.rotation = Quaternion.Euler(0, angleH, 0);
+        //transform.Rotate(0, angleH/10, 0);
     }
 
     public void UpdateUI() //Adapt after allowing multiple weapons.
