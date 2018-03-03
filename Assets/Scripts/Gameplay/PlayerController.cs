@@ -2,41 +2,77 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] GameObject fpsCam, casing;
-    [SerializeField] Animation shootAnimation;
-    public GameObject gun;
+    [Header("Camera Variables")]
+    [SerializeField] Camera cam;
+    [SerializeField] int fovNormal, fovAim;
 
-    bool isShooting = false;
-    [SerializeField] float shotDuration;
+    [Space(10)]
 
-	void Start ()
+    [Header("Weapon Variables")]
+    [SerializeField] Gun[] guns = new Gun[1];
+    [SerializeField] GameObject currentGun;
+    [SerializeField] Transform gunPosition;
+    [SerializeField] Vector3 hipPosition, adsPosition;
+    [SerializeField] float aimSpeed;
+
+    [Space(10)]
+
+    [Header("UI Variables")]
+    [SerializeField] TextMeshProUGUI gunName;
+    [SerializeField] TextMeshProUGUI currentAmmo, totalAmmo, fireMode;
+
+    void Start ()
     {
-        Cursor.visible = false;
-    }
+        cam.fieldOfView = fovNormal;
+
+        gunPosition.localPosition = hipPosition;
+        adsPosition = new Vector3(0, guns[0].aimHeight, hipPosition.z);
+
+        currentGun.GetComponent<GunController>().casing = guns[0].gunCasing;
+
+        InitializeWeapons();
+        UpdateUI();
+	}
 	
 	void Update ()
     {
-		if (Input.GetButtonDown("Fire1") && !isShooting)
+        //Weapons related inputs.
+        //Firing the gun.
+		if (Input.GetButtonDown("Fire1")) currentGun.GetComponent<GunController>().Shoot();
+        //Aiming the gun.
+        if (Input.GetButtonDown("Fire2"))
         {
-            Shoot();
+            gunPosition.DOLocalMove(adsPosition,aimSpeed);
+            cam.DOFieldOfView(fovAim, aimSpeed);
         }
-	}
-
-    void Shoot()
-    {
-        isShooting = true;
-        gun.GetComponent<GunController>().Shoot();
-        fpsCam.transform.DOPunchPosition(Vector3.forward * -0.05f, .15f, 7, 1, false);
-        fpsCam.transform.DOPunchRotation(Vector3.right * -1, .15f, 7, 1);
-
-        //Invoke("SetShooting", shotDuration);
+        if (Input.GetButtonUp("Fire2"))
+        {
+            gunPosition.DOLocalMove(hipPosition, aimSpeed);
+            cam.DOFieldOfView(fovNormal, aimSpeed);
+        }
+        //Reloading
+        if (Input.GetButtonDown("Reload")) currentGun.GetComponent<GunController>().Reload();
     }
 
-    public void SetShooting()
+    void InitializeWeapons() //Adapt after allowing multiple weapons.
     {
-        isShooting = false;
+        currentGun.GetComponent<GunController>().magSize = guns[0].ammoCount;
+        currentGun.GetComponent<GunController>().totalAmmo = guns[0].ammoCount * guns[0].totalClips;
+    }
+
+    void SwapWeapon(int w)
+    {
+
+    }
+
+    public void UpdateUI() //Adapt after allowing multiple weapons.
+    {
+        //gunName.text = guns[0].gunName;
+        currentAmmo.text = currentGun.GetComponent<GunController>().currentAmmo.ToString("000");
+        totalAmmo.text = currentGun.GetComponent<GunController>().totalAmmo.ToString("/ 000");
     }
 }
