@@ -5,22 +5,26 @@ using DG.Tweening;
 
 public class GunController : MonoBehaviour
 {
-    Animator animator;
-    AudioSource audioSource;
-    [SerializeField] AudioClip[] audioFiles = new AudioClip[2];
-    [SerializeField] GameObject cam;
-
-    bool canShoot = true;
-    public GameObject casing;
-
-    [Space(10)]
-
     [Header("Weapon Parameters")]
+    [SerializeField] Gun gun;
+    public string gunName;
     public int currentAmmo;
     public int magSize, totalAmmo;
     public int damage;
-    [SerializeField] Transform barrel;
+    [SerializeField] AudioClip[] audioFiles = new AudioClip[2];
+    bool canShoot = true;
+    GameObject casing;
+    Transform barrel;
     [SerializeField] GameObject hitDecal;
+
+    [Space(10)]
+
+    Animator animator;
+    AudioSource audioSource;
+    
+    [SerializeField] GameObject cam;
+
+    
 
 
 	void Start ()
@@ -29,15 +33,22 @@ public class GunController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         cam = GameObject.FindGameObjectWithTag("Player").transform.GetChild(0).GetChild(0).gameObject;
 
-        currentAmmo = magSize;
+        InitializeWeapon();
 
         barrel = transform.Find("Barrel");
     }
 	
-	void Update ()
+	void InitializeWeapon()
     {
+        gunName = gun.gunName;
+        totalAmmo = gun.totalClips * gun.ammoCount;
+        magSize = gun.ammoCount;
+        currentAmmo = magSize;
 
-	}
+        damage = gun.damage;
+
+        casing = gun.gunCasing;
+    }
 
     public void Shoot()
     {

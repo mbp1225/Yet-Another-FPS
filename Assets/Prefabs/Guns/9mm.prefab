@@ -1534,14 +1534,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7fabf0c41f13a14ba83d21d5cd3dc71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioFiles:
-  - {fileID: 8300000, guid: 553472ac3e95960449aea5a9bcbfb00e, type: 3}
-  - {fileID: 0}
-  cam: {fileID: 0}
-  casing: {fileID: 0}
+  gun: {fileID: 11400000, guid: 733d6f85f83d5ff47be2df1342374d96, type: 2}
+  gunName: 
   currentAmmo: 0
   magSize: 0
   totalAmmo: 0
   damage: 0
-  barrel: {fileID: 0}
+  audioFiles:
+  - {fileID: 8300000, guid: 553472ac3e95960449aea5a9bcbfb00e, type: 3}
+  - {fileID: 8300000, guid: 20b51c6a9d81bf344826a48b4549f640, type: 3}
+  - {fileID: 8300000, guid: 7c9451ea83a40e04da27c5c0da5f4538, type: 3}
+  - {fileID: 8300000, guid: bd8591bf782b8b64ba1b5485a02ac770, type: 3}
+  - {fileID: 8300000, guid: e042dd6a23b0eaf40a459d6122d06dda, type: 3}
+  - {fileID: 8300000, guid: ecf030f600bd80e49a1343d15feb49fa, type: 3}
   hitDecal: {fileID: 1000010355441670, guid: 02a509a7fa70ed740ba4197e20c5d32d, type: 2}
+  cam: {fileID: 0}

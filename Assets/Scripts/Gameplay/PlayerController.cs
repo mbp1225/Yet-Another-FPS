@@ -24,7 +24,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Weapon Variables")]
     [SerializeField] Gun[] guns = new Gun[1];
-    [SerializeField] GameObject currentGun;
+    [SerializeField] GameObject[] equippedGuns = new GameObject[1];
+    [SerializeField] int currentGun = 0;
     [SerializeField] Transform gunPosition;
     [SerializeField] Vector3 hipPosition, adsPosition;
     [SerializeField] float aimSpeed;
@@ -41,16 +42,14 @@ public class PlayerController : MonoBehaviour
 
         cam.fieldOfView = fovNormal;
 
-        gunPosition.localPosition = hipPosition;
-        adsPosition = new Vector3(0, guns[0].aimHeight, hipPosition.z);
-
-        currentGun.GetComponent<GunController>().casing = guns[0].gunCasing;
-
         InitializeWeapons();
-        UpdateUI();
+
+        gunPosition.localPosition = hipPosition;
 
         rb = GetComponent<Rigidbody>();
-	}
+
+        UpdateUI();
+    }
 
     void Update ()
     {
@@ -67,10 +66,11 @@ public class PlayerController : MonoBehaviour
 
         //Weapons related inputs.
         //Firing the gun.
-        if (Input.GetButtonDown("Fire1")) currentGun.GetComponent<GunController>().Shoot();
+        if (Input.GetButtonDown("Fire1")) equippedGuns[currentGun].GetComponent<GunController>().Shoot();
         //Aiming the gun.
         if (Input.GetButtonDown("Fire2"))
         {
+            adsPosition = new Vector3(0, guns[currentGun].aimHeight, hipPosition.z);
             gunPosition.DOLocalMove(adsPosition,aimSpeed);
             cam.DOFieldOfView(fovAim, aimSpeed);
         }
@@ -80,23 +80,41 @@ public class PlayerController : MonoBehaviour
             cam.DOFieldOfView(fovNormal, aimSpeed);
         }
         //Reloading
-        if (Input.GetButtonDown("Reload")) currentGun.GetComponent<GunController>().Reload();
+        if (Input.GetButtonDown("Reload")) equippedGuns[currentGun].GetComponent<GunController>().Reload();
+        //Changing weapons.
+        if (Input.GetKeyDown(KeyCode.Q)) SwapWeapon();
         //---//
 
         //gunPosition.LookAt(head.transform.forward * 100);
     }
 
-    void InitializeWeapons() //Adapt after allowing multiple weapons.
+    void InitializeWeapons()
     {
-        currentGun.GetComponent<GunController>().magSize = guns[0].ammoCount;
-        currentGun.GetComponent<GunController>().totalAmmo = guns[0].ammoCount * guns[0].totalClips;
-        currentGun.GetComponent<GunController>().currentAmmo = currentGun.GetComponent<GunController>().magSize;
-        currentGun.GetComponent<GunController>().damage = guns[0].damage;
+        int i = 0;
+        foreach (Gun weapon in guns)
+        {
+            equippedGuns[i] = Instantiate(weapon.gunModel, gunPosition);
+            if (i != 0) equippedGuns[i].SetActive(false);
+            i++;
+        }
     }
 
-    void SwapWeapon(int w)
+    void SwapWeapon()
     {
+        if (currentGun == 0)
+        {
+            currentGun = 1;
+            equippedGuns[0].SetActive(false);
+            equippedGuns[1].SetActive(true);
+        }
+        if (currentGun == 1)
+        {
+            currentGun = 0;
+            equippedGuns[1].SetActive(false);
+            equippedGuns[0].SetActive(true);
+        }
 
+        UpdateUI();
     }
 
     void Move(float h, float v)
@@ -122,7 +140,7 @@ public class PlayerController : MonoBehaviour
     public void UpdateUI() //Adapt after allowing multiple weapons.
     {
         //gunName.text = guns[0].gunName;
-        currentAmmo.text = currentGun.GetComponent<GunController>().currentAmmo.ToString("000");
-        totalAmmo.text = currentGun.GetComponent<GunController>().totalAmmo.ToString("/ 000");
+        currentAmmo.text = equippedGuns[currentGun].GetComponent<GunController>().currentAmmo.ToString("000");
+        totalAmmo.text = equippedGuns[currentGun].GetComponent<GunController>().totalAmmo.ToString("/ 000");
     }
 }
