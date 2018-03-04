@@ -83,13 +83,15 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Reload")) currentGun.GetComponent<GunController>().Reload();
         //---//
 
-        gunPosition.LookAt(head.transform.forward * 100);
+        //gunPosition.LookAt(head.transform.forward * 100);
     }
 
     void InitializeWeapons() //Adapt after allowing multiple weapons.
     {
         currentGun.GetComponent<GunController>().magSize = guns[0].ammoCount;
         currentGun.GetComponent<GunController>().totalAmmo = guns[0].ammoCount * guns[0].totalClips;
+        currentGun.GetComponent<GunController>().currentAmmo = currentGun.GetComponent<GunController>().magSize;
+        currentGun.GetComponent<GunController>().damage = guns[0].damage;
     }
 
     void SwapWeapon(int w)

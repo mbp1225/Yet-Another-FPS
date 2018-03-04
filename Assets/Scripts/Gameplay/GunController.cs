@@ -16,7 +16,11 @@ public class GunController : MonoBehaviour
     [Space(10)]
 
     [Header("Weapon Parameters")]
-    public int currentAmmo, magSize, totalAmmo;
+    public int currentAmmo;
+    public int magSize, totalAmmo;
+    public int damage;
+    [SerializeField] Transform barrel;
+    [SerializeField] GameObject hitDecal;
 
 
 	void Start ()
@@ -26,26 +30,39 @@ public class GunController : MonoBehaviour
         cam = GameObject.FindGameObjectWithTag("Player").transform.GetChild(0).GetChild(0).gameObject;
 
         currentAmmo = magSize;
-	}
+
+        barrel = transform.Find("Barrel");
+    }
 	
 	void Update ()
     {
-		
+
 	}
 
     public void Shoot()
     {
         if (canShoot && currentAmmo > 0)
         {
+            //Animation, ammo management.
             currentAmmo--;
             canShoot = false;
-            animator.SetTrigger("Shot");
+            if (currentAmmo > 0) animator.SetTrigger("Shot");
+            else animator.SetTrigger("LastShot");
             PlaySound(0);
             cam.transform.DOPunchPosition(Vector3.forward * -0.05f, .15f, 7, 1, false);
             cam.transform.DOPunchRotation(Vector3.right * -1, .15f, 7, 1);
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().UpdateUI();
+
+            //Actually shooting.
+            RaycastHit hit;
+            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 100f))
+            {
+                Instantiate(hitDecal, hit.point, Quaternion.LookRotation(hit.normal), null);
+            }
+
         }
-        else if (canShoot && currentAmmo == 0) Reload();
+        else if (canShoot && currentAmmo == 0 && totalAmmo > 0) Reload();
+        else if (canShoot && currentAmmo == 0 && totalAmmo == 0) animator.SetTrigger("EmptyShot");
         else return;
     }
 
@@ -91,13 +108,6 @@ public class GunController : MonoBehaviour
 
     public void PlaySound(int n)
     {
-        switch (n)
-        {
-            case 0:
-                audioSource.PlayOneShot(audioFiles[0]);
-                break;
-            case 1:
-                break;
-        }
+        audioSource.PlayOneShot(audioFiles[n]);
     }
 }
