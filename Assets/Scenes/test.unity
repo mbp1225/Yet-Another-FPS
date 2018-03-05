@@ -3124,11 +3124,6 @@ Prefab:
       propertyPath: totalAmmo
       value: 
       objectReference: {fileID: 477754049}
-    - target: {fileID: 114396301886256656, guid: 23b06e50845f74244b136a597f3550bb,
-        type: 2}
-      propertyPath: guns.Array.data[1]
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 23b06e50845f74244b136a597f3550bb, type: 2}
   m_IsPrefabParent: 0

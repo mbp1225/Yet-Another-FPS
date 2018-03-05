@@ -70,12 +70,14 @@ public class PlayerController : MonoBehaviour
         //Aiming the gun.
         if (Input.GetButtonDown("Fire2"))
         {
+            equippedGuns[currentGun].GetComponent<GunController>().Aim(true);
             adsPosition = new Vector3(0, guns[currentGun].aimHeight, hipPosition.z);
             gunPosition.DOLocalMove(adsPosition,aimSpeed);
             cam.DOFieldOfView(fovAim, aimSpeed);
         }
         if (Input.GetButtonUp("Fire2"))
         {
+            equippedGuns[currentGun].GetComponent<GunController>().Aim(false);
             gunPosition.DOLocalMove(hipPosition, aimSpeed);
             cam.DOFieldOfView(fovNormal, aimSpeed);
         }

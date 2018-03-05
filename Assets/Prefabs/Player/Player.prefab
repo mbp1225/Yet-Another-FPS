@@ -211,7 +211,6 @@ MonoBehaviour:
   head: {fileID: 4338982789334390}
   guns:
   - {fileID: 11400000, guid: 733d6f85f83d5ff47be2df1342374d96, type: 2}
-  - {fileID: 11400000, guid: 733d6f85f83d5ff47be2df1342374d96, type: 2}
   equippedGuns:
   - {fileID: 0}
   - {fileID: 0}
