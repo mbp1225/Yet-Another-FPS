@@ -15,7 +15,7 @@ MonoBehaviour:
   ammoCount: 17
   totalClips: 4
   damage: 20
-  aimHeight: -0.21
+  aimHeight: -0.0825
   canToggleFiremode: 1
   recoil: 0.025
   recoilMultiplier: 1.1
@@ -23,5 +23,6 @@ MonoBehaviour:
   spread: 0
   pellets: 0
   fireMode: 0
+  reloadType: 0
   gunModel: {fileID: 1235247318863628, guid: 74f3d57b5a7fb1043baa066aafd9264e, type: 2}
   gunCasing: {fileID: 1974220543555412, guid: 02260446f6061ca4b9f0c49c1bacdb95, type: 2}

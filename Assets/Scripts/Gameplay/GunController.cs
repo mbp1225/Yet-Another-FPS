@@ -7,10 +7,10 @@ public class GunController : MonoBehaviour
 {
     [Header("Weapon Parameters")]
     [SerializeField] Gun gun;
-    public string gunName;
-    public int currentAmmo;
-    public int magSize, totalAmmo;
-    public int damage;
+    public string gunName = "Gun";
+    public int currentAmmo = 0;
+    public int magSize = 0, totalAmmo = 0;
+    public int damage = 0;
     [SerializeField] AudioClip[] audioFiles = new AudioClip[2];
     bool canShoot = true;
     [SerializeField] float currentRecoil, baseRecoil, recoilMultiplier;
@@ -70,6 +70,8 @@ public class GunController : MonoBehaviour
         damage = gun.damage;
 
         casing = gun.gunCasing;
+
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().UpdateUI();
     }
 
     public void Shoot()

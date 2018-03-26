@@ -20,8 +20,10 @@ public class Gun : ScriptableObject
     public int pellets;
 
     public enum FireMode {semi, auto, burst};
-
     public FireMode fireMode;
+
+    public enum ReloadType { magazine, single };
+    public ReloadType reloadType;
 
     public GameObject gunModel;
     public GameObject gunCasing;
